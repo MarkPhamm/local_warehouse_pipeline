@@ -1,6 +1,6 @@
 # local_elt_pipeline
 
-A simple local ELT (Extract, Load, Transform) pipeline built with modern data tools:
+A local-first ELT pipeline that extracts CFPB consumer complaint data, transforms it with dbt into analytics-ready models, and serves interactive dashboards—all running on your laptop with zero cloud dependencies.
 <img width="1200" height="500" alt="image" src="https://github.com/user-attachments/assets/a8752180-63af-4f0a-8e0e-a973188651ed" />
 
 * **Package Manager**: uv (Python)
