@@ -1,13 +1,14 @@
 # local_elt_pipeline
 
 A simple local ELT (Extract, Load, Transform) pipeline built with modern data tools:
+<img width="1200" height="500" alt="image" src="https://github.com/user-attachments/assets/a8752180-63af-4f0a-8e0e-a973188651ed" />
 
 * **Package Manager**: uv (Python)
 * **Ingestion**: dlt
 * **Transformation**: dbt
 * **OLAP Database**: DuckDB
 * **Orchestration**: Prefect
-* **BI Tool**: Streamlit
+* **BI Tool**: Visivo
 
 ## Quick Start
 
