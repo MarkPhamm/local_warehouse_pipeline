@@ -8,14 +8,13 @@ import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 STATE_FILE = Path("pipeline_state.json")
 
 
-def get_last_loaded_date() -> Optional[str]:
+def get_last_loaded_date() -> str | None:
     """
     Get the last successfully loaded date from state file.
 
@@ -26,10 +25,10 @@ def get_last_loaded_date() -> Optional[str]:
         return None
 
     try:
-        with open(STATE_FILE, "r") as f:
+        with open(STATE_FILE) as f:
             state = json.load(f)
             return state.get("last_loaded_date")
-    except (json.JSONDecodeError, IOError) as e:
+    except (OSError, json.JSONDecodeError) as e:
         logger.warning(f"Error reading state file: {e}")
         return None
 
@@ -50,7 +49,7 @@ def update_last_loaded_date(date: str) -> None:
         with open(STATE_FILE, "w") as f:
             json.dump(state, f, indent=2)
         logger.info(f"Updated state: last_loaded_date = {date}")
-    except IOError as e:
+    except OSError as e:
         logger.error(f"Error writing state file: {e}")
         raise
 

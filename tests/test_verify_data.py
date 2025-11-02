@@ -9,7 +9,6 @@ These tests check that:
 """
 
 import os
-from pathlib import Path
 
 import duckdb
 import pytest
@@ -81,9 +80,7 @@ class TestTableStructure:
         ).fetchall()
 
         assert len(columns) > 0, f"Table {schema_name}.{table_name} should have columns"
-        assert (
-            len(columns) >= 10
-        ), f"Table should have at least 10 columns, got {len(columns)}"
+        assert len(columns) >= 10, f"Table should have at least 10 columns, got {len(columns)}"
 
     def test_table_has_required_columns(self, db_connection, schema_name, table_name):
         """Test that the table has required key columns."""
@@ -99,9 +96,7 @@ class TestTableStructure:
         required_columns = ["complaint_id", "date_received", "company", "product"]
 
         for required_col in required_columns:
-            assert (
-                required_col in column_names
-            ), f"Table should have column: {required_col}"
+            assert required_col in column_names, f"Table should have column: {required_col}"
 
 
 class TestDataContent:
@@ -132,9 +127,7 @@ class TestDataContent:
             f"Found {unique_count} unique values out of {total_count} total records"
         )
 
-    def test_sample_records_have_required_fields(
-        self, db_connection, schema_name, table_name
-    ):
+    def test_sample_records_have_required_fields(self, db_connection, schema_name, table_name):
         """Test that sample records have the required fields populated."""
         samples = db_connection.execute(
             f"""
@@ -174,7 +167,7 @@ class TestDataContent:
         # At least 90% of records should have valid dates
         assert (result / total) >= 0.9, (
             f"At least 90% of records should have valid dates. "
-            f"Got {result}/{total} ({result/total*100:.1f}%)"
+            f"Got {result}/{total} ({result / total * 100:.1f}%)"
         )
 
 
@@ -199,6 +192,6 @@ class TestDataQuality:
         ).fetchone()[0]
 
         # Should have very few completely null records
-        assert (
-            null_count == 0
-        ), f"Should not have completely null records. Found {null_count} out of {total}"
+        assert null_count == 0, (
+            f"Should not have completely null records. Found {null_count} out of {total}"
+        )

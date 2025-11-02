@@ -7,9 +7,10 @@ and loads it into DuckDB in the raw schema.
 
 import hashlib
 import logging
+from collections.abc import Iterator
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any
 
 import dlt
 from dlt.destinations import duckdb
@@ -25,11 +26,11 @@ logger = logging.getLogger(__name__)
     primary_key="complaint_id",
 )
 def extract_complaints(
-    date_received_min: Optional[str] = None,
-    date_received_max: Optional[str] = None,
-    company_name: Optional[str] = None,
-    max_records: Optional[int] = None,
-) -> Iterator[Dict[str, Any]]:
+    date_received_min: str | None = None,
+    date_received_max: str | None = None,
+    company_name: str | None = None,
+    max_records: int | None = None,
+) -> Iterator[dict[str, Any]]:
     """
     Extract complaints from CFPB API.
 
@@ -70,9 +71,7 @@ def extract_complaints(
             if "complaint_id" not in complaint or not complaint.get("complaint_id"):
                 # Try to get ID from various possible fields (API returns _source with _id)
                 complaint_id_field = (
-                    complaint.get("_id")
-                    or complaint.get("id")
-                    or complaint.get("complaint_id")
+                    complaint.get("_id") or complaint.get("id") or complaint.get("complaint_id")
                 )
 
                 # If we have an ID, use it; otherwise construct from date + hash

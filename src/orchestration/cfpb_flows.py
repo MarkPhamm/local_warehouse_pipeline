@@ -12,7 +12,7 @@ import logging
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from prefect import flow, task
 
@@ -29,7 +29,7 @@ def extract_and_load_complaints_task(
     date_max: str,
     company_name: str,
     database_path: str = "database/cfpb_complaints.duckdb",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Prefect task to extract and load complaints for a company.
 
@@ -64,7 +64,7 @@ def extract_and_load_complaints_task(
 
 
 @task(name="run_dbt_models", log_prints=True, retries=2, retry_delay_seconds=10)
-def run_dbt_models_task() -> Dict[str, Any]:
+def run_dbt_models_task() -> dict[str, Any]:
     """
     Prefect task to run all dbt models.
 
@@ -122,7 +122,7 @@ def run_dbt_models_task() -> Dict[str, Any]:
 
 
 @task(name="run_dbt_tests", log_prints=True, retries=2, retry_delay_seconds=10)
-def run_dbt_tests_task() -> Dict[str, Any]:
+def run_dbt_tests_task() -> dict[str, Any]:
     """
     Prefect task to run dbt tests.
 
@@ -182,7 +182,7 @@ def run_dbt_tests_task() -> Dict[str, Any]:
 )
 def cfpb_complaints_incremental_flow(
     database_path: str = "database/cfpb_complaints.duckdb",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Single Prefect flow for incremental CFPB complaints loading and transformation.
 
@@ -216,9 +216,7 @@ def cfpb_complaints_incremental_flow(
             "last_date": date_max,
         }
 
-    logger.info(
-        f"Loading data for {len(COMPANIES)} companies from {date_min} to {date_max}"
-    )
+    logger.info(f"Loading data for {len(COMPANIES)} companies from {date_min} to {date_max}")
 
     # Load data for each company
     results = []

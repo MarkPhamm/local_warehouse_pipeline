@@ -74,7 +74,7 @@ def main():
         logger.info("Starting ELT pipeline: Extract & Load → Transform (dbt) → Test")
         result = cfpb_complaints_incremental_flow(database_path=args.database)
 
-        logger.info(f"Flow completed successfully")
+        logger.info("Flow completed successfully")
         logger.info(f"Summary: {result}")
 
         # Check if dbt transformations succeeded

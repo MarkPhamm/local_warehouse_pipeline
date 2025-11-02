@@ -9,7 +9,7 @@ API Documentation: https://cfpb.github.io/api/ccdb/api.html
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -68,17 +68,17 @@ class CFPBAPIClient:
 
     def get_complaints(
         self,
-        date_received_min: Optional[str] = None,
-        date_received_max: Optional[str] = None,
+        date_received_min: str | None = None,
+        date_received_max: str | None = None,
         size: int = 10000,
         frm: int = 0,
         sort: str = "created_date_desc",
-        fields: Optional[List[str]] = None,
-        search_term: Optional[str] = None,
-        search_field: Optional[str] = None,
+        fields: list[str] | None = None,
+        search_term: str | None = None,
+        search_field: str | None = None,
         no_aggs: bool = False,
         **filters,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Fetch consumer complaints from the CFPB API.
 
@@ -132,9 +132,7 @@ class CFPBAPIClient:
 
         try:
             logger.info(f"Fetching complaints from CFPB API with params: {params}")
-            response = self.session.get(
-                self.BASE_URL, params=params, timeout=self.timeout
-            )
+            response = self.session.get(self.BASE_URL, params=params, timeout=self.timeout)
             response.raise_for_status()
 
             data = response.json()
@@ -142,9 +140,7 @@ class CFPBAPIClient:
             # Handle different response formats
             if isinstance(data, list):
                 # Direct list format
-                logger.info(
-                    f"Successfully fetched {len(data)} complaints (direct list format)"
-                )
+                logger.info(f"Successfully fetched {len(data)} complaints (direct list format)")
             elif isinstance(data, dict) and "hits" in data:
                 # Nested dict format
                 hits = data.get("hits", {}).get("hits", [])
@@ -167,11 +163,11 @@ class CFPBAPIClient:
 
     def get_complaints_paginated(
         self,
-        date_received_min: Optional[str] = None,
-        date_received_max: Optional[str] = None,
-        max_records: Optional[int] = None,
+        date_received_min: str | None = None,
+        date_received_max: str | None = None,
+        max_records: int | None = None,
         **filters,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Fetch all complaints with pagination support.
 
@@ -245,7 +241,7 @@ class CFPBAPIClient:
 
     def get_complaints_for_date_range(
         self, start_date: datetime, end_date: datetime, **filters
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Fetch complaints for a specific date range.
 
@@ -266,9 +262,7 @@ class CFPBAPIClient:
             date_received_min=date_min, date_received_max=date_max, **filters
         )
 
-    def get_complaints_last_n_days(
-        self, days: int = 1, **filters
-    ) -> List[Dict[str, Any]]:
+    def get_complaints_last_n_days(self, days: int = 1, **filters) -> list[dict[str, Any]]:
         """
         Fetch complaints from the last N days.
 
@@ -289,12 +283,12 @@ class CFPBAPIClient:
     def get_complaints_by_company(
         self,
         company_name: str,
-        date_received_min: Optional[str] = None,
-        date_received_max: Optional[str] = None,
-        max_records: Optional[int] = None,
+        date_received_min: str | None = None,
+        date_received_max: str | None = None,
+        max_records: int | None = None,
         no_aggs: bool = True,
         **filters,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Fetch complaints for a specific company.
 
