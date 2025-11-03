@@ -211,3 +211,4 @@ pipeline_state.json
 
 # DuckDB
 database/cfpb_complaints.duckdb
+database/cfpb_complaints.duckdb.wal
