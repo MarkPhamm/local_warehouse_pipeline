@@ -4,7 +4,7 @@ A local-first ELT pipeline that extracts CFPB consumer complaint data, transform
 
 * **Package Manager**: uv (Python)
 * **Ingestion**: dlt
-* **Transformation**: dbt core
+* **Transformation & Documentation**: dbt core & dbt-collibri
 * **OLAP Database**: DuckDB
 * **Orchestration**: Prefect
 * **BI Tool**: Visivo
@@ -50,6 +50,7 @@ uv run python run_prefect_flow.py --reset-state
 
 # Access UI at http://127.0.0.1:4200
 ```
+
 <img width="2562" height="1352" alt="image" src="https://github.com/user-attachments/assets/81c72031-f948-455c-8dc2-d7b2483ce747" />
 
 ### 1.5 Access DuckDB UI
@@ -68,6 +69,7 @@ Then launch the DuckDB UI:
 ```bash
 duckdb -ui
 ```
+
 We need to add in our database path as follow:
 <img width="2566" height="1352" alt="image" src="https://github.com/user-attachments/assets/0167dae6-0e77-42b9-ae4f-09bfe2490b5c" />
 <img width="2554" height="1353" alt="image" src="https://github.com/user-attachments/assets/743c707f-d2a4-4fe4-a76e-829a88c6a3ec" />
@@ -95,7 +97,6 @@ Then open your browser to:
 
 <img width="2390" height="601" alt="image" src="https://github.com/user-attachments/assets/e87eb339-7514-467a-a01a-860582b6bab4" />
 
-
 **Available Dashboards**:
 
 * **Executive Dashboard**: High-level overview of complaint trends and company performance
@@ -107,6 +108,25 @@ Then open your browser to:
 2. dbt models have been built (`cd duckdb_dbt && dbt run`)
 
 Additional docs: [Visivo Documentation](docs/README_VISIVO.MD)
+
+### 1.7 Generate dbt Lineage Reports with Colibri
+
+Generate interactive data lineage reports to visualize how data flows through your dbt models:
+
+```bash
+# Navigate to the dbt project directory
+cd duckdb_dbt
+
+# Compile models and generate dbt documentation
+dbt compile && dbt docs generate
+
+# Generate lineage report
+colibri generate
+```
+
+Open `duckdb_dbt/dist/index.html` in your browser to explore the interactive lineage visualization showing model dependencies, data flow, and column-level lineage.
+
+Additional docs: [dbt Documentation](docs/README_DBT.md)
 
 ## 2. Testing
 

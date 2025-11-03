@@ -2,6 +2,8 @@
 
 ## 1. Overview
 
+<img src="../images/visivo.png" alt="visivo" style="width:100%">
+
 Visivo is a code-first business intelligence (BI) tool that allows you to build interactive dashboards and visualizations using YAML configuration files. It's designed for data teams who prefer infrastructure-as-code approaches and want version-controlled analytics.
 
 **Key Features**:

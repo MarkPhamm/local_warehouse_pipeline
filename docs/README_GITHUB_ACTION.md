@@ -2,6 +2,8 @@
 
 ## 1. Overview
 
+<img src="../images/github_action.png" alt="github action" style="width:100%">
+
 This project uses GitHub Actions for continuous integration (CI) to ensure code quality and consistency across the codebase. The CI pipeline runs automatically on pushes and pull requests to validate code changes.
 
 **Key Features**:

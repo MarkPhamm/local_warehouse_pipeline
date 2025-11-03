@@ -547,6 +547,51 @@ ORDER BY complaint_count DESC
 LIMIT 20;
 ```
 
+### 7.3 Generating Lineage Reports with dbt-colibri
+
+dbt-colibri is a powerful tool for generating interactive data lineage reports from your dbt project. It extracts lineage information and creates visual reports showing how data flows through your models.
+
+**Prerequisites**:
+
+Ensure dbt-colibri is installed:
+
+```bash
+uv add dbt-colibri
+```
+
+**Usage**:
+
+```bash
+# Navigate to the dbt project directory
+cd duckdb_dbt
+
+# First, compile models and generate dbt documentation
+dbt compile && dbt docs generate
+
+# Generate lineage report
+colibri generate
+```
+
+<img src="../images/collibri-cli.png" alt="dbt-colibri CLI output" style="width:100%">
+
+**Output**:
+
+After running `colibri generate`, you'll find two files in the `dist/` directory:
+
+- **JSON Manifest**: `dist/colibri-manifest.json` - Machine-readable lineage data
+- **HTML Report**: `dist/index.html` - Interactive visual lineage report
+
+The tool automatically detects your adapter type (DuckDB in this project) and extracts comprehensive lineage information showing:
+
+- Model dependencies and relationships
+- Data flow from sources through staging, intermediate, and marts layers
+- Column-level lineage (if available)
+- Model metadata and relationships
+
+Open `dist/index.html` in your browser to explore the interactive lineage visualization.
+
+<img src="../images/collibri-ui.png" alt="dbt-colibri UI visualization" style="width:100%">
+
 ## 8. Configuration
 
 ### 8.1 Database Profile
@@ -565,6 +610,7 @@ Models are organized into custom schemas:
 
 - **dbt-core**: Data transformation framework
 - **dbt-duckdb**: DuckDB adapter for dbt
+- **dbt-colibri**: Data lineage visualization tool
 - **DuckDB**: In-process SQL database
 - **dlt**: Data loading tool (upstream dependency)
 
