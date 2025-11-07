@@ -8,6 +8,7 @@ API Documentation: https://cfpb.github.io/api/ccdb/api.html
 """
 
 import logging
+import time
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -232,6 +233,12 @@ class CFPBAPIClient:
                 f"Fetched {len(complaints)} complaints. Total so far: {len(all_complaints)}"
             )
 
+            # Check if we've exceeded max_records and truncate if needed
+            if max_records and len(all_complaints) > max_records:
+                all_complaints = all_complaints[:max_records]
+                logger.info(f"Truncated to max_records limit: {max_records}")
+                break
+
             # Check if there are more results
             if len(all_complaints) >= total_available:
                 logger.info("Fetched all available complaints")
@@ -334,3 +341,39 @@ class CFPBAPIClient:
         if self.session:
             self.session.close()
             logger.info("CFPB API client session closed")
+
+
+if __name__ == "__main__":
+    start_time = time.time()
+    client = CFPBAPIClient()
+    complaints = client.get_complaints(
+        date_received_min="2011-12-01",
+        date_received_max="2025-10-02",
+        size=10000,
+        frm=0,
+        sort="created_date_desc",
+        fields=[
+            "complaint_id",
+            "date_received",
+            "company",
+            "product",
+            "subproduct",
+            "issue",
+            "subissue",
+            "consumer_complaint_narrative",
+            "consumer_consent_provided",
+            "submitted_via",
+            "date_sent_to_company",
+            "company_response",
+            "timely",
+            "consumer_disputed",
+            "complaint_id",
+        ],
+        search_term="bank of america",
+        search_field="company",
+        no_aggs=False,
+    )
+    print(len(complaints))
+    print(complaints[0])
+    end_time = time.time()
+    print(f"Time taken: {end_time - start_time} seconds")
