@@ -67,5 +67,3 @@ Process SQL models by layers
 
 **Task:** `run_dbt_tests_task()`  
 **File:** `src/orchestration/cfpb_flows.py`
-
-## 🔴 6. Output Summary
