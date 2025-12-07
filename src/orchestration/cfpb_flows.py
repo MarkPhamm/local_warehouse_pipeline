@@ -24,6 +24,12 @@ logger = logging.getLogger(__name__)
 
 
 @task(name="extract_and_load_complaints", log_prints=True)
+
+# create_pipeline() (DuckDB connection)
+# extract_complaints() (API call)
+# pipeline.run(....) (load to DuckDB)
+
+
 def extract_and_load_complaints_task(
     date_min: str,
     date_max: str,
