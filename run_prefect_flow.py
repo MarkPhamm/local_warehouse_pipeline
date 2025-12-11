@@ -27,10 +27,10 @@ Examples:
     python run_prefect_flow.py --reset-state
 """
 
-import argparse
-import logging
+import argparse  # handle CLI arguments (--database, --reset-state)
+import logging  # log pipeline process
 import sys
-from pathlib import Path
+from pathlib import Path  # sys and Path used to add 'src' folder to Python path so imports work
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
@@ -56,7 +56,7 @@ def main():
         help="Path to DuckDB database file (default: database/cfpb_complaints.duckdb)",
     )
     parser.add_argument(
-        "--reset-state",
+        "--reset-state",  # If we execute this, it gonna delete every state before (cancel incremental) and gonna start from scratch with start-date
         action="store_true",
         help="Reset state file to trigger initial load from START_DATE",
     )
@@ -67,16 +67,26 @@ def main():
         from src.utils.state import reset_state
 
         print("Resetting pipeline state...", flush=True)
-        reset_state()
+        reset_state()  # Delete everything from the state_file
         print("State reset. Next run will perform initial load.", flush=True)
         logger.info("State reset. Next run will perform initial load.")
         return 0
 
     try:
         logger.info("Starting ELT pipeline: Extract & Load → Transform (dbt) → Test")
-        result = cfpb_complaints_incremental_flow(database_path=args.database)
+        result = cfpb_complaints_incremental_flow(
+            database_path=args.database
+        )  # Run the actual pipeline
 
-        if result is None:
+        # It gonna return a dictionay with the staus of 'result'
+        # For example:
+        # {
+        #  "status": "success",
+        #  "records_loaded": 15000,
+        #  "dbt_run": {"status": "success", "models": 12}
+        #  }
+
+        if result is None:  # Unexpected bug
             logger.error("Flow returned None - this should not happen")
             return 1
 

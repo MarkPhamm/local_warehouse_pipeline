@@ -14,6 +14,11 @@ dependencies = [
     "ipykernel>=7.1.0",
     "pandas>=2.3.3",
     "seaborn>=0.13.2",
+    "joblib>=1.5.2",
+    "catboost>=1.2.8",
+    "scikit-learn>=1.7.2",
+    "category-encoders>=2.8.1",
+    "xgboost>=3.1.2",
 ]
 
 [build-system]
@@ -53,12 +58,19 @@ target-version = "py311"
 select = ["E", "F", "I", "N", "W", "UP"]
 ignore = [
     "E501",  # Line too long (handled by formatter)
+    "N803",  # Argument name should be lowercase
+    "N806",  # Variable in function should be lowercase
 ]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
+
+[dependency-groups]
+dev = [
+    "jupyterlab>=4.5.0",
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["src"]
