@@ -1,6 +1,6 @@
-# Local ELT pipeline
+# Local Data Warehouse 
 
-A local-first ELT pipeline that extracts CFPB consumer complaint data, transforms it with dbt into analytics-ready models, and serves interactive dashboards—all running on your laptop with zero cloud dependencies.
+A local-first Data Wareouse pipeline that extracts CFPB consumer complaint data, transforms it with dbt into analytics-ready models, and serves interactive dashboards—all running on your laptop with zero cloud dependencies.
 
 * **Package Manager**: uv (Python)
 * **Ingestion**: dlt
