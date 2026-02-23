@@ -1,14 +1,14 @@
-# Local Data Warehouse 
+# Local Data Warehouse
 
 A local-first Data Wareouse pipeline that extracts CFPB consumer complaint data, transforms it with dbt into analytics-ready models, and serves interactive dashboards—all running on your laptop with zero cloud dependencies.
 
-* **Package Manager**: uv (Python)
-* **Ingestion**: dlt + [PyArrow](docs/PYARROW.md) (API → Parquet staging → DuckDB)
-* **Staging Format**: Parquet (via PyArrow) in `landing/`
-* **Transformation & Documentation**: dbt core & dbt-collibri
-* **OLAP Database**: DuckDB
-* **Orchestration**: Prefect
-* **BI Tool**: Visivo
+* **Package Manager**: [uv](https://docs.astral.sh/uv/) (Python)
+* **Ingestion**: [dlt](docs/README_DLT.md) + [PyArrow](docs/PYARROW.md) (API → Parquet staging → DuckDB)
+* **Staging Format**: [Parquet](docs/PYARROW.md) (via PyArrow) in `landing/`
+* **Transformation & Documentation**: [dbt core](docs/README_DBT.md) & [dbt-colibri](docs/README_DBT.md)
+* **OLAP Database**: [DuckDB](docs/README_DUCKDB.md)
+* **Orchestration**: [Prefect](docs/README_PREFECT.md)
+* **BI Tool**: [Visivo](docs/README_VISIVO.md)
 
 <img src="https://github.com/user-attachments/assets/1b4e8d7b-0527-4fdc-b104-562cf0c3efa6" alt="Architecture Diagram" style="width: 100%; height: auto;" />
 
