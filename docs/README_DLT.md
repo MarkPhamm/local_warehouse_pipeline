@@ -27,6 +27,8 @@ apis/
 pipelines/
   └── cfpb_complaints_pipeline.py  # dlt pipeline definition
       ├── extract_complaints()     # dlt resource for data extraction
+      ├── save_to_parquet()        # Extract from API → write Parquet to landing/
+      ├── load_parquet_to_duckdb() # Read Parquet → load into DuckDB via dlt
       ├── create_pipeline()        # Pipeline configuration
       └── DuckDB destination       # Loads to database/cfpb_complaints.duckdb
 
@@ -38,6 +40,10 @@ utils/
 
 orchestration/
   └── cfpb_flows.py            # Prefect flow for incremental pipeline
+
+landing/
+  └── cfpb_complaints/         # Parquet staging area (gitignored)
+      └── {company}_{date_min}_{date_max}.parquet
 ```
 
 ### 2.2 Data Source
@@ -90,7 +96,11 @@ cfpb_api_client.py (pagination, retries, error handling)
     ↓
 extract_complaints() (dlt resource - adds metadata, ensures complaint_id)
     ↓
-create_pipeline() (configures DuckDB destination, raw schema)
+save_to_parquet() (writes Parquet to landing/ staging area)
+    ↓
+landing/cfpb_complaints/{company}_{date_min}_{date_max}.parquet
+    ↓
+load_parquet_to_duckdb() (reads Parquet, loads via dlt with merge/dedup)
     ↓
 DuckDB (database/cfpb_complaints.duckdb)
     └── Schema: raw
@@ -139,19 +149,21 @@ from src.orchestration.cfpb_flows import cfpb_complaints_incremental_flow
 result = cfpb_complaints_incremental_flow()
 ```
 
-### 5.3 Direct dlt Usage (Advanced)
+### 5.3 Direct Usage (Advanced)
 
 ```python
-from src.pipelines.cfpb_complaints_pipeline import create_pipeline, extract_complaints
+from src.pipelines.cfpb_complaints_pipeline import save_to_parquet, load_parquet_to_duckdb
 
-pipeline = create_pipeline()
-info = pipeline.run(
-    extract_complaints(
-        date_received_min="2024-01-01",
-        date_received_max="2024-12-31",
-        company_name="jpmorgan",
-    )
+# Step 1: Extract to parquet
+parquet_path = save_to_parquet(
+    date_received_min="2024-01-01",
+    date_received_max="2024-12-31",
+    company_name="jpmorgan",
 )
+
+# Step 2: Load parquet into DuckDB
+if parquet_path:
+    result = load_parquet_to_duckdb(parquet_path)
 ```
 
 ## 6. Prefect Orchestration
@@ -169,8 +181,8 @@ The pipeline uses Prefect 3.x for workflow orchestration, providing:
 
 ```text
 cfpb-complaints-incremental (Flow)
-  └── extract_and_load_complaints (Task)
-      └── Per company extraction and loading
+  ├── extract_to_parquet (Task) — per company, writes Parquet to landing/
+  └── load_parquet_to_duckdb (Task) — per company, loads Parquet into DuckDB
 ```
 
 ### 6.3 Prefect UI Setup

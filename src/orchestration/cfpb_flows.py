@@ -17,55 +17,63 @@ from typing import Any
 from prefect import flow, task
 
 from ..cfg.config import COMPANIES, START_DATE
-from ..pipelines.cfpb_complaints_pipeline import create_pipeline, extract_complaints
+from ..pipelines.cfpb_complaints_pipeline import load_parquet_to_duckdb, save_to_parquet
 from ..utils.state import get_next_load_date, update_last_loaded_date
 
 logger = logging.getLogger(__name__)
 
 
-@task(name="extract_and_load_complaints", log_prints=True)
-
-# create_pipeline() (DuckDB connection)
-# extract_complaints() (API call)
-# pipeline.run(....) (load to DuckDB)
-
-
-def extract_and_load_complaints_task(
+@task(name="extract_to_parquet", log_prints=True)
+def extract_to_parquet_task(
     date_min: str,
     date_max: str,
     company_name: str,
-    database_path: str = "database/cfpb_complaints.duckdb",
-) -> dict[str, Any]:
+) -> str | None:
     """
-    Prefect task to extract and load complaints for a company.
+    Prefect task to extract complaints and save as parquet.
 
     Args:
         date_min: Minimum received date (YYYY-MM-DD)
         date_max: Maximum received date (YYYY-MM-DD)
         company_name: Company name to filter
+
+    Returns:
+        Path to the parquet file, or None if no records
+    """
+    logger.info(f"Extracting complaints for {company_name}: {date_min} to {date_max}")
+    parquet_path = save_to_parquet(
+        date_received_min=date_min,
+        date_received_max=date_max,
+        company_name=company_name,
+    )
+    return parquet_path
+
+
+@task(name="load_parquet_to_duckdb", log_prints=True)
+def load_parquet_to_duckdb_task(
+    parquet_path: str,
+    database_path: str = "database/cfpb_complaints.duckdb",
+) -> dict[str, Any]:
+    """
+    Prefect task to load a parquet file into DuckDB.
+
+    Args:
+        parquet_path: Path to the parquet file
         database_path: Path to DuckDB database file
 
     Returns:
         Dictionary with execution results
     """
-    logger.info(f"Loading complaints for {company_name}: {date_min} to {date_max}")
-
-    pipeline = create_pipeline(database_path=database_path)
-
-    info = pipeline.run(
-        extract_complaints(
-            date_received_min=date_min,
-            date_received_max=date_max,
-            company_name=company_name,
-        )
+    logger.info(f"Loading parquet {parquet_path} into DuckDB")
+    result = load_parquet_to_duckdb(
+        parquet_path=parquet_path,
+        database_path=database_path,
     )
-
-    logger.info(f"Completed loading for {company_name}")
+    logger.info("Completed loading parquet into DuckDB")
     return {
-        "company": company_name,
         "status": "success",
-        "date_range": f"{date_min} to {date_max}",
-        "info": str(info),
+        "parquet_path": parquet_path,
+        **result,
     }
 
 
@@ -224,16 +232,32 @@ def cfpb_complaints_incremental_flow(
 
     logger.info(f"Loading data for {len(COMPANIES)} companies from {date_min} to {date_max}")
 
-    # Load data for each company
+    # Extract to parquet, then load into DuckDB for each company
     results = []
     for company in COMPANIES:
         try:
-            result = extract_and_load_complaints_task(
+            parquet_path = extract_to_parquet_task(
                 date_min=date_min,
                 date_max=date_max,
                 company_name=company,
+            )
+            if parquet_path is None:
+                logger.info(f"No data extracted for {company}, skipping load")
+                results.append(
+                    {
+                        "company": company,
+                        "status": "success",
+                        "date_range": f"{date_min} to {date_max}",
+                        "info": "No records found",
+                    }
+                )
+                continue
+            result = load_parquet_to_duckdb_task(
+                parquet_path=parquet_path,
                 database_path=database_path,
             )
+            result["company"] = company
+            result["date_range"] = f"{date_min} to {date_max}"
             results.append(result)
         except Exception as e:
             logger.error(f"Failed to load data for {company}: {e}")
