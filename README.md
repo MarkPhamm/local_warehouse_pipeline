@@ -3,7 +3,8 @@
 A local-first Data Wareouse pipeline that extracts CFPB consumer complaint data, transforms it with dbt into analytics-ready models, and serves interactive dashboards—all running on your laptop with zero cloud dependencies.
 
 * **Package Manager**: uv (Python)
-* **Ingestion**: dlt
+* **Ingestion**: dlt + [PyArrow](docs/PYARROW.md) (API → Parquet staging → DuckDB)
+* **Staging Format**: Parquet (via PyArrow) in `landing/`
 * **Transformation & Documentation**: dbt core & dbt-collibri
 * **OLAP Database**: DuckDB
 * **Orchestration**: Prefect

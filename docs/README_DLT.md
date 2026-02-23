@@ -6,10 +6,11 @@ Complete guide for the CFPB consumer complaints data ingestion pipeline.
 
 <img src="../images/dlt.png" alt="dlt" style="width:100%">
 
-The ingestion pipeline extracts consumer complaint data from the CFPB API and loads it into DuckDB using dlt (data load tool). It supports incremental loading with automatic state management via Prefect orchestration.
+The ingestion pipeline extracts consumer complaint data from the CFPB API, stages it as Parquet files in a local landing area, then loads it into DuckDB using dlt (data load tool). It supports incremental loading with automatic state management via Prefect orchestration.
 
 **Key Features:**
 
+- **Parquet staging area** (`landing/cfpb_complaints/`) for debugging, archival, and replayability
 - Incremental loading (initial load + daily updates)
 - Automatic state tracking
 - Company-specific filtering
@@ -76,7 +77,7 @@ COMPANIES = [
 **Initial Load (First Run):**
 
 1. No state file exists → loads from `START_DATE` to today
-2. Processes all companies from config sequentially
+2. For each company: extracts from API → writes Parquet to `landing/` → loads into DuckDB
 3. Saves `last_loaded_date = today` to `pipeline_state.json` after success
 
 **Incremental Load (Subsequent Runs):**
@@ -84,7 +85,7 @@ COMPANIES = [
 1. Reads `pipeline_state.json` for last loaded date
 2. Calculates date range: `last_loaded_date + 1 day` to today
 3. If already up to date (start > end), skips execution
-4. Extracts and loads only new data
+4. For each company: extracts to Parquet staging, then loads into DuckDB
 5. Updates state only if all companies succeed
 
 ### 4.2 Data Flow
