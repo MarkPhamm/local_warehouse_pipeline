@@ -230,9 +230,7 @@ def cfpb_complaints_incremental_flow(
             "last_date": date_max,
         }
 
-    logger.info(
-        f"Loading data for {len(COMPANIES)} companies from {date_min} to {date_max}"
-    )
+    logger.info(f"Loading data for {len(COMPANIES)} companies from {date_min} to {date_max}")
 
     # Extract to parquet, then load into DuckDB for each company
     results = []
