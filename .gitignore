@@ -214,3 +214,7 @@ database/cfpb_complaints.duckdb.wal
 
 *.duckdb
 *.db
+
+# Landing area (parquet data files)
+landing/*
+!landing/.gitkeep
