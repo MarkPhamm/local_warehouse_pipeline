@@ -16,6 +16,8 @@ from typing import Any
 
 from prefect import flow, task
 
+import pyarrow.parquet as pq
+
 from ..cfg.config import COMPANIES, START_DATE
 from ..pipelines.cfpb_complaints_pipeline import load_parquet_to_duckdb, save_to_parquet
 from ..utils.state import get_next_load_date, update_last_loaded_date
@@ -241,7 +243,8 @@ def cfpb_complaints_incremental_flow(
                 date_max=date_max,
                 company_name=company,
             )
-            if parquet_path is None:
+            row_count = pq.read_table(parquet_path).num_rows
+            if row_count == 0:
                 logger.info(f"No data extracted for {company}, skipping load")
                 results.append(
                     {
