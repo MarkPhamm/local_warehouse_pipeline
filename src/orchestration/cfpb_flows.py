@@ -14,9 +14,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from prefect import flow, task
-
 import pyarrow.parquet as pq
+from prefect import flow, task
 
 from ..cfg.config import COMPANIES, START_DATE
 from ..pipelines.cfpb_complaints_pipeline import load_parquet_to_duckdb, save_to_parquet
