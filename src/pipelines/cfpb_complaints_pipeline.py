@@ -136,7 +136,8 @@ def save_to_parquet(
 
     table = pa.Table.from_pylist(records)
 
-    landing_path = Path(landing_dir)
+    today_dir = datetime.now().strftime("%Y_%m_%d")
+    landing_path = Path(landing_dir) / today_dir
     landing_path.mkdir(parents=True, exist_ok=True)
 
     safe_company = _sanitize_filename(company_name)
