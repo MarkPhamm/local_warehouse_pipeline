@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import pyarrow.parquet as pq
 from prefect import flow, task
 
 from ..cfg.config import COMPANIES, START_DATE
@@ -241,7 +242,8 @@ def cfpb_complaints_incremental_flow(
                 date_max=date_max,
                 company_name=company,
             )
-            if parquet_path is None:
+            row_count = pq.read_table(parquet_path).num_rows
+            if row_count == 0:
                 logger.info(f"No data extracted for {company}, skipping load")
                 results.append(
                     {

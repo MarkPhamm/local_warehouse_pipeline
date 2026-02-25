@@ -43,7 +43,34 @@ uv run python run_prefect_flow.py
 uv run python run_prefect_flow.py --reset-state
 ```
 
-### 1.4 Access Prefect UI (Optional)
+### 1.4 Backfill Landing Area
+
+The landing area stores daily parquet files under `landing/cfpb_complaints/YYYY_MM_DD/`, one file per company per day. Use the backfill script to populate historical data:
+
+```bash
+# Backfill a date range
+uv run python run_backfill.py --start 2026-01-01 --end 2026-02-25
+
+# Backfill last 7 days
+uv run python run_backfill.py --days 7
+
+# Backfill a single day
+uv run python run_backfill.py --start 2026-01-15 --end 2026-01-15
+```
+
+Each daily directory contains 10 parquet files (one per company). Empty parquet files are created for days with no complaints to maintain a consistent structure.
+
+```
+landing/cfpb_complaints/
+├── 2026_01_01/
+│   ├── jpmorgan_2026-01-01_2026-01-02.parquet
+│   ├── bank_of_america_2026-01-01_2026-01-02.parquet
+│   └── ...
+├── 2026_01_02/
+│   └── ...
+```
+
+### 1.5 Access Prefect UI (Optional)
 
 ```bash
 # Start Prefect server
@@ -54,7 +81,7 @@ uv run python run_prefect_flow.py --reset-state
 
 <img width="2562" height="1352" alt="image" src="https://github.com/user-attachments/assets/81c72031-f948-455c-8dc2-d7b2483ce747" />
 
-### 1.5 Access DuckDB UI
+### 1.6 Access DuckDB UI
 
 First, install the DuckDB CLI:
 
@@ -77,7 +104,7 @@ We need to add in our database path as follow:
 
 Additional docs: [DuckDB UI Documentation](https://duckdb.org/docs/api/cli/ui)
 
-### 1.6 Access Visivo Dashboards
+### 1.7 Access Visivo Dashboards
 
 Start the Visivo web server to view interactive dashboards:
 
@@ -110,7 +137,7 @@ Then open your browser to:
 
 Additional docs: [Visivo Documentation](docs/README_VISIVO.MD)
 
-### 1.7 Generate dbt Lineage Reports with Colibri
+### 1.8 Generate dbt Lineage Reports with Colibri
 
 Generate interactive data lineage reports to visualize how data flows through your dbt models:
 
