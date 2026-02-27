@@ -7,9 +7,9 @@ import pandas as pd
 
 class ResponsePredictor:
     def __init__(self):
-        # Current file is in: project_root/app/
-        # We need to go to:   project_root/src/model/
-        self.base_path = Path(__file__).parent.parent / "src" / "models"
+        # Current file is in: project_root/app/predictor/
+        # We need to go to:   project_root/src/models/
+        self.base_path = Path(__file__).parent.parent.parent / "src" / "models"
 
         self.model = None
         self.preprocessor = None
