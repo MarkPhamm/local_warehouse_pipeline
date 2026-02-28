@@ -24,12 +24,12 @@ app/
     ├── components.py                # Reusable Streamlit UI components
     ├── data_utils.py                # Data transformation utilities
     ├── utils.py                     # Core utilities (DB connection, filters, styling)
-    ├── Home.py                      # Landing page
+    ├── home.py                      # Landing page
     └── pages/
-        ├── 1_Executive_Summary.py   # KPIs and high-level trends
-        ├── 2_Company_Performance.py # Company efficiency benchmarking
-        ├── 3_Product_Issues.py      # Product/issue root cause analysis
-        └── 4_Geographic_Trends.py   # Regional distribution and channels
+        ├── 1_executive_summary.py   # KPIs and high-level trends
+        ├── 2_company_performance.py # Company efficiency benchmarking
+        ├── 3_product_issues.py      # Product/issue root cause analysis
+        └── 4_geographic_trends.py   # Regional distribution and channels
 ```
 
 ### Architecture Highlights
@@ -67,7 +67,7 @@ The central navigation hub that introduces the available analysis modules.
 
 ---
 
-### 2. Executive Summary (`1_Executive_Summary.py`)
+### 2. Executive Summary (`1_executive_summary.py`)
 A high-level view for decision-makers to monitor overall system health.
 
 **Key Metrics (KPIs):**
@@ -89,7 +89,7 @@ A high-level view for decision-makers to monitor overall system health.
 
 ---
 
-### 3. Company Performance (`2_Company_Performance.py`)
+### 3. Company Performance (`2_company_performance.py`)
 A benchmarking tool to compare financial institutions against one another.
 
 **Key Components:**
@@ -118,7 +118,7 @@ A benchmarking tool to compare financial institutions against one another.
 
 ---
 
-### 4. Product Friction Points (`3_Product_Issues.py`)
+### 4. Product Friction Points (`3_product_issues.py`)
 A deep-dive tool for Product Managers to identify root causes.
 
 **Key Features:**
@@ -146,7 +146,7 @@ A deep-dive tool for Product Managers to identify root causes.
 
 ---
 
-### 5. Geographic Trends (`4_Geographic_Trends.py`)
+### 5. Geographic Trends (`4_geographic_trends.py`)
 A regional analysis of consumer sentiment and submission channels.
 
 **Key Visualizations:**
@@ -200,7 +200,7 @@ This will install all required packages including:
 ### Step 3: Running the dashboard
 
 ```bash
-uv run streamlit run app/dashboard1/Home.py
+uv run streamlit run app/dashboard/home.py
 ```
 
 The dashboard will open automatically in your default browser at `http://localhost:8501`

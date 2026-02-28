@@ -3,7 +3,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from app.response_predictor import ResponsePredictor
+from app.predictor.response_predictor import ResponsePredictor
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Company Responses Predictor", page_icon="⚖️", layout="wide")
@@ -86,7 +86,8 @@ st.write("---")
 # --- INPUT + LOAD OPTIONS ---
 @st.cache_data
 def load_options():
-    options_path = Path(__file__).parent.parent / "src" / "models" / "options.json"
+    # Project root: app/predictor/ -> parent.parent.parent
+    options_path = Path(__file__).parent.parent.parent / "src" / "models" / "options.json"
 
     with open(options_path) as f:
         options = json.load(f)

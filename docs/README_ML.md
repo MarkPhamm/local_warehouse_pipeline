@@ -11,8 +11,9 @@ The solution includes an end-to-end workflow: **Exploratory Data Analysis (EDA) 
 
 ```bash
 ├── app/
-│   ├── response_predictor.py      # Inference class loading model artifacts
-│   └── streamlit_app.py           # Interactive web dashboard for predictions
+│   └── predictor/
+│       ├── response_predictor.py  # Inference class loading model artifacts
+│       └── streamlit_app.py       # Interactive web dashboard for predictions
 ├── notebooks/
 │   ├── explore_eda_filter_encoding.ipynb  # EDA, feature selection, and data preparation
 │   └── train_stoptions.ipynb              # Model training (RF, XGBoost, CatBoost) & evaluation
@@ -52,7 +53,7 @@ The solution includes an end-to-end workflow: **Exploratory Data Analysis (EDA) 
 
 ### 3\. Application & Interface
 
-**File:** `app/streamlit_app.py`
+**File:** `app/predictor/streamlit_app.py`
 
   - A user-friendly **Streamlit** dashboard that allows users to manually input complaint details.
   - Real-time prediction using the `ResponsePredictor` class.
@@ -86,7 +87,7 @@ Ensure you have **Python 3.10+** and the required dependencies installed (includ
 To launch the prediction dashboard locally:
 
 ```bash
-streamlit run app/streamlit_app.py
+uv run streamlit run app/predictor/streamlit_app.py
 ```
 
 -----
